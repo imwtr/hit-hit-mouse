@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE-edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<meta charset="UTF-8">
+	<title>Test</title>
+	<style type="text/css">
+		.container {
+			width: 500px;
+			height: 300px;
+			margin: 50px auto;
+			border: 1px solid #ddd;
+			text-align: center;
+		}
+		.game-top {
+			padding-top: 10px;
+			width: 100%;
+			height: 90px;
+		}
+		.game-top p {
+			margin: 5px;
+		}
+		.game-content {
+			overflow: auto;
+			width: 100%;
+			border-top: 1px solid #ddd;
+			background-color: #ddf;
+		}
+		.game-content ul {
+			list-style: none;
+		}
+		.game-content li {
+			float: left;
+			margin-top: 50px;
+			margin-left: 30px;
+			width: 100px;
+			height: 50px;
+			border-radius: 50%;
+			background-color: #67d0b4;
+			box-shadow: 0 0 50px #706565 inset;
+		}
+		.game-content li:last-child {
+			margin-bottom: 50px;
+		}
+		.game-content div {
+			position: relative;
+			margin-top: -15px;
+			margin-left: 25px;
+			width: 50px;
+			height: 70px;
+			border-radius: 50%/40%;
+			background-color: #dfb25d;
+			opacity: 0;
+		}
+		.game-content div.good {
+			background-color: #dfb25d;
+		}
+		.game-content div.bad {
+			background-color: #a48f5c;
+		}
+		@keyframes mouse-move {
+			50% {
+				margin-top: -40px;
+				opacity: 1;
+			}
+			100% {
+				margin-top: -15px;
+				opacity: 0;
+			}
+		}
+		.game-content div.active {
+			animation: mouse-move 2s ease-in-out infinite;
+		}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h4>无聊打打地鼠</h4>
+
+		<div class="game-top">
+			<p><input type="button" value="开始游戏" id="game-start"><p>
+			<p>得分：<span id="game-score">0</span></p>
+			<p>剩余时间：<span id="game-time">60</span> s</p>
+		</div>
+		<div class="game-content">
+			<ul>
+				<li><div></div></li>
+				<li><div></div></li>
+				<li><div></div></li>
+				<li><div></div></li>
+				<li><div></div></li>
+				<li><div></div></li>
+				<li><div></div></li>
+				<li><div></div></li>
+				<li><div></div></li>
+			</ul>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+
+		function MouseGame() {
+			this.mousesWrap = this.$('.game-content');
+			this.mouses = this.$('.game-content div');
+			this.gameStart = this.$('#game-start');
+			this.gameTime = this.$('#game-time');
+			this.gameScore = this.$('#game-score');
+			this.goodScore = 100;
+			this.badScore = 50;
+
+			this.bindEvent();
+		}
+
+		MouseGame.prototype = {
+			constructor: MouseGame,
+
+			/**
+			 * 获取元素
+			 * @param  {String} elem 元素的字符串标识
+			 * @example
+			 * $('div') | $('p.active')
+			 * @return {NodeList}      获取的元素集
+			 */
+			$: function(elem) {
+				return document.querySelectorAll(elem);
+			},
+
+			/**
+			 * 获取给定范围的随机数
+			 * @param  {Number} from 起始
+			 * @param  {Number} to   结束
+			 * @return {Number}      随机数
+			 */
+			getRandom: function(from, to) {
+				return Math.floor(Math.random() * (to - from + 1)) + from;
+			},
+
+			/**
+			 * 设置元素内容
+			 * @param  {HTMLElement} elem 要设置的元素
+			 * @param  {String} val  设置的内容
+			 * @return {String}      设置好的内容|元素本身的内容
+			 */
+			text: function(elem, val) {
+				if (elem.textContent) {
+					return val !== undefined ? elem.textContent = val : elem.textContent;
+				} else if (elem.innerText) {
+					return val !== undefined ? elem.innerText = val : elem.innerText;
+				}
+			},
+
+			// 运动操作
+			moveUpAndDown: function() {
+				var that = this;
+
+				// 定时器随机定义good|bad老鼠个数，以及需要显示的个数
+				that.moveTime = setInterval(function() {
+
+					for (var i = 0, j = that.mouses.length; i < j; ++i) {
+						that.mouses[i].setAttribute('clicked', '0');
+						that.mouses[i].className = 'good active';
+						that.mouses[i].style.display = 'none';
+					}
+
+					// bad 的个数
+					for (var i = 0; i < that.getRandom(0, 8); i++) {
+						that.mouses[that.getRandom(0, 8)].className = 'bad active';
+					}
+
+					// 要显示的个数
+					for (var i = 0; i < that.getRandom(0, 8); i++) {
+						that.mouses[that.getRandom(0, 8)].style.display = 'block';
+					}
+				}, 2000);
+			},
+
+			// 打地鼠操作
+			bindEvent: function() {
+				var that = this;
+
+				// 监听游戏开始/重新开始
+				that.gameStart[0].addEventListener('click', function() {
+					that.startGame();
+				}, false);
+
+				// 打地鼠操作
+				that.mousesWrap[0].addEventListener('click', function(e) {
+					e = e || window.event;
+					var elem = e.target || e.srcElement;
+					// 如果当前项被隐藏则不操作，多次点击只取第一次分数
+					if (elem.style.display !== 'block' || elem.getAttribute('clicked') === '1') {
+						return;
+					}
+					// 扣分
+					if (elem.className.indexOf('bad') !== -1) {
+						that.score -= that.badScore;
+					}
+					// 加分
+					else {
+						that.score += that.goodScore;
+					}
+
+					elem.setAttribute('clicked', '1');
+					that.text(that.gameScore[0], that.score);
+				}, false);
+			},
+
+			// 倒计时，当前剩余游戏时间
+			countDown: function() {
+				var that = this;
+
+				var t = setInterval(function() {
+					that.text(that.gameTime[0], --that.totalTime);
+
+					if (that.totalTime === 0) {
+						clearInterval(t);
+						clearInterval(that.moveTime);
+
+						for (var i = 0, j = that.mouses.length; i < j; ++i) {
+							that.mouses[i].style.display = 'none';
+						}
+
+						alert('游戏结束，得分为：' + that.score);
+					}
+				}, 1000);
+			},
+
+			// 开始游戏
+			startGame: function() {
+				this.score = 0;
+				this.totalTime = 60;
+				this.text(this.gameTime[0], this.totalTime);
+				this.text(this.gameScore[0], this.score);
+
+				this.countDown();
+				this.moveUpAndDown();
+			}
+		};
+
+		new MouseGame();
+	</script>
+</body>
+</html>
+
