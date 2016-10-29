@@ -49,11 +49,25 @@
     background-color: #dfb25d;
     opacity: 0;
 }
+
 .game-content div.good {
     background-color: #dfb25d;
 }
+.game-content div.good[clicked="1"]::after {
+    content: "✓";
+    line-height: 70px;
+    font-size: 40px;
+    color: #0ad845;
+}
+
 .game-content div.bad {
     background-color: #a48f5c;
+}
+.game-content div.bad[clicked="1"]::after {
+    content: "✕";
+    line-height: 70px;
+    font-size: 40px;
+    color: #db1536;
 }
 
 @media screen and (max-width: 500px) {
