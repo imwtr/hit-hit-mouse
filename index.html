@@ -13,6 +13,7 @@
 			border: 1px solid #ddd;
 			text-align: center;
 		}
+		
 		.game-top {
 			padding-top: 10px;
 			width: 100%;
@@ -21,6 +22,7 @@
 		.game-top p {
 			margin: 5px;
 		}
+		
 		.game-content {
 			overflow: auto;
 			width: 100%;
@@ -43,6 +45,7 @@
 		.game-content li:last-child {
 			margin-bottom: 50px;
 		}
+		
 		.game-content div {
 			position: relative;
 			margin-top: -15px;
@@ -59,6 +62,17 @@
 		.game-content div.bad {
 			background-color: #a48f5c;
 		}
+		
+		@-webkit-keyframes mouse-move {
+			50% {
+				margin-top: -40px;
+				opacity: 1;
+			}
+			100% {
+				margin-top: -15px;
+				opacity: 0;
+			}
+		}
 		@keyframes mouse-move {
 			50% {
 				margin-top: -40px;
@@ -69,8 +83,10 @@
 				opacity: 0;
 			}
 		}
+		
 		.game-content div.active {
-			animation: mouse-move 2s ease-in-out infinite;
+			-webkit-animation: mouse-move 2s ease-in-out infinite;
+				animation: mouse-move 2s ease-in-out infinite;
 		}
 	</style>
 </head>
@@ -164,12 +180,14 @@
 					}
 
 					// bad 的个数
-					for (var i = 0; i < that.getRandom(0, 8); i++) {
+					var badNum = that.getRandom(0, 8);
+					for (var i = 0; i < badNum; i++) {
 						that.mouses[that.getRandom(0, 8)].className = 'bad active';
 					}
 
 					// 要显示的个数
-					for (var i = 0; i < that.getRandom(0, 8); i++) {
+					var showNum = that.getRandom(0, 8);
+					for (var i = 0; i < showNum; i++) {
 						that.mouses[that.getRandom(0, 8)].style.display = 'block';
 					}
 				}, 2000);
@@ -216,7 +234,7 @@
 					if (that.totalTime === 0) {
 						clearInterval(t);
 						clearInterval(that.moveTime);
-
+						console.log(that.moveTime);
 						for (var i = 0, j = that.mouses.length; i < j; ++i) {
 							that.mouses[i].style.display = 'none';
 						}
