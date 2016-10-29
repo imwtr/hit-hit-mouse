@@ -1,0 +1,99 @@
+.container {
+    width: 500px;
+    height: 300px;
+    margin: 50px auto;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.game-top {
+    padding-top: 10px;
+    width: 100%;
+    height: 90px;
+}
+.game-top p {
+    margin: 5px;
+}
+
+.game-content {
+    overflow: auto;
+    width: 100%;
+    border-top: 1px solid #ddd;
+    background-color: #ddf;
+}
+
+.game-content ul {
+    list-style: none;
+}
+.game-content li {
+    float: left;
+    margin-top: 50px;
+    margin-left: 30px;
+    width: 100px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #67d0b4;
+    box-shadow: 0 0 50px #706565 inset;
+}
+.game-content li:last-child {
+    margin-bottom: 50px;
+}
+
+.game-content div {
+    position: relative;
+    margin-top: -15px;
+    margin-left: 25px;
+    width: 50px;
+    height: 70px;
+    border-radius: 50%/40%;
+    background-color: #dfb25d;
+    opacity: 0;
+}
+.game-content div.good {
+    background-color: #dfb25d;
+}
+.game-content div.bad {
+    background-color: #a48f5c;
+}
+
+@media screen and (max-width: 500px) {
+    .container {
+        width: 290px;
+    }
+    .game-content ul {
+        padding: 0;
+    }
+    .game-content li {
+        margin-left: 5px;
+        width: 90px;
+    }
+    .game-content div {
+        margin-left: 20px;
+    }
+}
+
+@-webkit-keyframes mouse-move {
+    50% {
+        margin-top: -40px;
+        opacity: 1;
+    }
+    100% {
+        margin-top: -15px;
+        opacity: 0;
+    }
+}
+@keyframes mouse-move {
+    50% {
+        margin-top: -40px;
+        opacity: 1;
+    }
+    100% {
+        margin-top: -15px;
+        opacity: 0;
+    }
+}
+
+.game-content div.active {
+    -webkit-animation: mouse-move 2s ease-in-out infinite;
+        animation: mouse-move 2s ease-in-out infinite;
+}
